@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Seller;
 class AuthenticationController extends Controller
 {
     public function register(Request $request)
@@ -13,13 +14,25 @@ class AuthenticationController extends Controller
         $request->validate([
             'name' => 'required|min:3',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'seller' => 'nullable|boolean'
         ]);
-        User::create([
+        
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'user_type' => $request->seller === true ? 'seller' : 'buyer'
         ]);
+
+        // If seller is true, create seller record
+        if ($request->seller === true) {
+            Seller::create([
+                'user_id' => $user->id,
+                'is_approved' => false
+            ]);
+        }
+
         return response()->json(['message' => 'User registered successfully']);
     }
     public function login(Request $request)
@@ -28,11 +41,24 @@ class AuthenticationController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
+        
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-        $token = Auth::user()->createToken('API Token')->plainTextToken;
-        return response()->json(['token' => $token]);
+
+        $user = Auth::user();
+
+        // Check if user is seller and not approved
+        if ($user->user_type === 'seller') {
+            $seller = $user->seller;
+            if (!$seller || !$seller->is_approved) {
+                Auth::logout();
+                return response()->json(['message' => 'Your seller account is pending approval'], 403);
+            }
+        }
+
+        $token = $user->createToken('API Token')->plainTextToken;
+        return response()->json(['token' => $token, 'user_type' => $user->user_type]);
     }
     public function userInfo(Request $request)
     {
