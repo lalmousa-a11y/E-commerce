@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthenticationController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -32,4 +33,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sellers', [PostController::class, 'index'])->middleware('role:admin'); 
     Route::post('sellers/{post}/approve', [PostController::class, 'approve'])->middleware('role:admin'); 
     Route::post('sellers/{post}/disapprove', [PostController::class, 'disapprove'])->middleware('role:admin'); 
+    
+     Route::get('categories', [CategoryController::class, 'index']);
+    Route::get('categories/{category}', [CategoryController::class, 'show']);
+    Route::post('categories', [CategoryController::class, 'store'])->middleware('role:admin');
+    Route::put('categories/{category}', [CategoryController::class, 'update'])->middleware('role:admin');
+    Route::patch('categories/{category}', [CategoryController::class, 'update'])->middleware('role:admin');
+    Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->middleware('role:admin');
+
+
+
 });
