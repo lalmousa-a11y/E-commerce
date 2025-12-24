@@ -14,7 +14,7 @@ class PostController extends Controller
     {
         $users = User::where('user_type', 'seller')->get();
         return SellerResource::collection($users);    
-        return response()->json(Post::with('user')->latest()->get());
+
     }
     public function store(Request $request)
     {
