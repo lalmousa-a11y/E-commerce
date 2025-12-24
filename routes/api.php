@@ -28,4 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Posts - delete (admin only)
     Route::delete('posts/{post}', [PostController::class, 'destroy'])->middleware('role:admin');
+
+    Route::get('sellers', [PostController::class, 'index'])->middleware('role:admin'); 
+    Route::post('sellers/{post}/approve', [PostController::class, 'approve'])->middleware('role:admin'); 
+    Route::post('sellers/{post}/disapprove', [PostController::class, 'disapprove'])->middleware('role:admin'); 
 });
