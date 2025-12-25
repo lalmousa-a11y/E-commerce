@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Http\Resources\ProductResource;
+use App\Models\ProductImage;
+
+
+
 
 
 class ProductController extends Controller
@@ -27,7 +31,9 @@ class ProductController extends Controller
         'name' => 'required|string|max:100',
         'description' => 'nullable|string',
         'price' => 'required|numeric',
-        'category_id' => 'required|exists:categories,id'
+        'category_id' => 'required|exists:categories,id',
+        'image' => 'required|url'
+        
     ]);
 
      $category = Category::where('id', $data['category_id'])->first();
@@ -47,14 +53,20 @@ class ProductController extends Controller
         'seller_id' => $data['seller_id'],
         'category_id' => $data['category_id'],
     ]);
+        ProductImage::create([
+        'product_id' => $product->id,
+        'image_path' => $data['image'],
+    ]);
 
-    return new ProductResource($product->load(['category', 'seller']));
+
+return new ProductResource($product->load(['category', 'seller', 'images']));
+
 }
         public function show(Product $product)
     {
-        return new ProductResource($product->load(['category', 'seller']));
-    }
+return new ProductResource($product->load(['category', 'seller', 'images']));
 
+    }
       public function update(Request $request, Product $product)
     {
         if ($product->seller_id !== auth()->id()) {
@@ -66,11 +78,12 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'sometimes|numeric',
             'category_id' => 'sometimes|exists:categories,id',
+
         ]);
 
         $product->update($data);
 
-        return new ProductResource($product->load(['category', 'seller']));
+        return new ProductResource($product->load(['category', 'seller', 'images']));
     }
 
     public function destroy(Product $product)

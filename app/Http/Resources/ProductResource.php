@@ -20,7 +20,9 @@ class ProductResource extends JsonResource
             ],
             'category' => [
                 'name' => $this->category->name,
-            ]
+            ],
+'images' => $this->images->pluck('image_path'),
+
         ];
     }
 }

@@ -4,6 +4,8 @@ use App\Http\Controllers\API\AuthenticationController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\ProductImageController;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -47,5 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/products', [ProductController::class, 'store'])->middleware('role:seller');
     Route::put('/products/{product}', [ProductController::class, 'update'])->middleware('role:seller');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->middleware('role:seller');
+     Route::post('/products/{product}/images', [ProductImageController::class, 'store'])->middleware('role:seller');
+
 
 });
