@@ -27,16 +27,15 @@ class ProductController extends Controller
         'name' => 'required|string|max:100',
         'description' => 'nullable|string',
         'price' => 'required|numeric',
-        'category_name' => 'required|string|max:100', 
+        'category_id' => 'required|exists:categories,id'
     ]);
 
-    $category = Category::where('name', $data['category_name'])->first();
+     $category = Category::where('id', $data['category_id'])->first();
 
-    if (!$category) {
-        return response()->json([
-            'message' => 'Category not found'
-        ], 404);
-    }
+     if (!$category) {
+    return response()->json(['message' => 'Category not found'], 404);
+}
+
 
     $data['seller_id'] = auth()->id();
     $data['category_id'] = $category->id;
