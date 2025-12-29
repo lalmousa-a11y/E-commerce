@@ -132,13 +132,24 @@ public function disapproveProduct($product_id)
 
     return response()->json(['message' => 'Product not found'], 404);
 }
-public function allProducts()
+public function  AllApprovedProducts() 
 {
-
-    $products = Product::with(['category', 'seller', 'files'])->get();
+    $products = Product::with(['category', 'seller', 'files'])
+        ->where('is_approved', 1)
+        ->get();
 
     return ProductResource::collection($products);
 }
+public function AllDisapprovedProducts() 
+{
+    $products = Product::with(['category', 'seller', 'files'])
+        ->where('is_approved', 0)
+        ->get();
+
+    return ProductResource::collection($products);
+}
+
+
 }
 
     

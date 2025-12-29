@@ -53,7 +53,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
  Route::post('/products/{product}/approve', [ProductController::class, 'approveProduct'])->middleware('role:admin');
 Route::post('/products/{product}/disapprove', [ProductController::class, 'disapproveProduct'])->middleware('role:admin');
-Route::get('/products/all', [ProductController::class, 'allProducts'])->middleware('role:admin');
+Route::get('/products/approved', [ProductController::class, 'AllApprovedProducts'])->middleware('role:admin');
+Route::get('/products/disapproved', [ProductController::class, 'AllDisapprovedProducts'])->middleware('role:admin');
+
 
 
 
