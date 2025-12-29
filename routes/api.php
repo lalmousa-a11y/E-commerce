@@ -4,8 +4,7 @@ use App\Http\Controllers\API\AuthenticationController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
-use App\Http\Controllers\API\ProductImageController;
-
+use App\Http\Controllers\API\FileController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -48,7 +47,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/seller/products', [ProductController::class, 'myProducts'])->middleware('role:seller');
     Route::post('/products', [ProductController::class, 'store'])->middleware('role:seller');
     Route::put('/products/{product}', [ProductController::class, 'update'])->middleware('role:seller');
-    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->middleware('role:seller');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->middleware('role:admin');
+
+        Route::post('upload', [FileController::class, 'upload'])->middleware('role:seller');
+
+ Route::post('/products/{product}/approve', [ProductController::class, 'approveProduct'])->middleware('role:admin');
+Route::post('/products/{product}/disapprove', [ProductController::class, 'disapproveProduct'])->middleware('role:admin');
+Route::get('/products/all', [ProductController::class, 'allProducts'])->middleware('role:admin');
+
+
 
 
 });

@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Http\Resources\ProductResource;
-use App\Models\ProductImage;
-
+use App\Models\File;
 
 
 
@@ -32,7 +31,7 @@ class ProductController extends Controller
         'description' => 'nullable|string',
         'price' => 'required|numeric',
         'category_id' => 'required|exists:categories,id',
-        'image' => 'required|url'
+        'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
         
     ]);
 
@@ -53,18 +52,20 @@ class ProductController extends Controller
         'seller_id' => $data['seller_id'],
         'category_id' => $data['category_id'],
     ]);
-        ProductImage::create([
-        'product_id' => $product->id,
-        'image_path' => $data['image'],
-    ]);
+    $path = $request->file('file')->store('products', 'public');
+
+  File::create([
+    'files' => $path,
+    'product_id' => $product->id, 
+]);
 
 
-return new ProductResource($product->load(['category', 'seller', 'images']));
+return new ProductResource($product->load(['category', 'seller', 'files']));
 
 }
         public function show(Product $product)
     {
-return new ProductResource($product->load(['category', 'seller', 'images']));
+return new ProductResource($product->load(['category', 'seller', 'files']));
 
     }
       public function update(Request $request, Product $product)
@@ -78,6 +79,8 @@ return new ProductResource($product->load(['category', 'seller', 'images']));
             'description' => 'nullable|string',
             'price' => 'sometimes|numeric',
             'category_id' => 'sometimes|exists:categories,id',
+          'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
+
 
         ]);
 
@@ -96,6 +99,46 @@ return new ProductResource($product->load(['category', 'seller', 'images']));
 
         return response()->json(['message' => 'Product deleted successfully']);
     }
+public function approveProduct($product_id)
+{
+    $product = Product::find($product_id);
+
+    if ($product) {
+        $product->is_approved = 1;
+        $product->save();
+
+        return response()->json([
+            'message' => 'Product approved successfully',
+            'product' => new ProductResource($product->load('files', 'category', 'seller'))
+        ]);
+    }
+
+    return response()->json(['message' => 'Product not found'], 404);
+}
+
+public function disapproveProduct($product_id)
+{
+    $product = Product::find($product_id);
+
+    if ($product) {
+        $product->is_approved = 0;
+        $product->save();
+
+        return response()->json([
+            'message' => 'Product disapproved successfully',
+            'product' => new ProductResource($product->load('files', 'category', 'seller'))
+        ]);
+    }
+
+    return response()->json(['message' => 'Product not found'], 404);
+}
+public function allProducts()
+{
+
+    $products = Product::with(['category', 'seller', 'files'])->get();
+
+    return ProductResource::collection($products);
+}
 }
 
     
