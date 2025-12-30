@@ -49,8 +49,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/products/{product}', [ProductController::class, 'update'])->middleware('role:seller');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->middleware('role:admin');
 
-        Route::post('upload', [FileController::class, 'upload'])->middleware('role:seller');
-
  Route::post('/products/{product}/approve', [ProductController::class, 'approveProduct'])->middleware('role:admin');
 Route::post('/products/{product}/disapprove', [ProductController::class, 'disapproveProduct'])->middleware('role:admin');
 Route::get('/products/approved', [ProductController::class, 'AllApprovedProducts'])->middleware('role:admin');

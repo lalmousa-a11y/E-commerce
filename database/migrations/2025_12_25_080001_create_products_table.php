@@ -19,7 +19,7 @@ return new class extends Migration
           $table->text('description')->nullable();
           $table->decimal('price', 10, 2);
           $table->string(column: 'status')->default('active');
-         $table->tinyInteger('is_approved')->default(0);
+         $table->tinyInteger('is_approved')->default(0)->nullable(false);
           $table->timestamps();
 });
     }

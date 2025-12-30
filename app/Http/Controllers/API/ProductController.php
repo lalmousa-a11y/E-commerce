@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Support\Facades\Storage;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
@@ -68,26 +70,42 @@ return new ProductResource($product->load(['category', 'seller', 'files']));
 return new ProductResource($product->load(['category', 'seller', 'files']));
 
     }
-      public function update(Request $request, Product $product)
-    {
-        if ($product->seller_id !== auth()->id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+ public function update(Request $request, Product $product)
+{
+    if ($product->seller_id !== auth()->id()) {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $data = $request->validate([
+        'name' => 'sometimes|string|max:100',
+        'description' => 'nullable|string',
+        'price' => 'sometimes|numeric',
+        'category_id' => 'sometimes|exists:categories,id',
+        'file' => 'sometimes|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
+
+    $product->update($data);
+
+    if ($request->hasFile('file')) {
+
+        $oldFile = $product->files()->first();
+
+        if ($oldFile) {
+            Storage::disk('public')->delete($oldFile->files);
+
+            $oldFile->delete();
         }
 
-        $data = $request->validate([
-            'name' => 'sometimes|string|max:100',
-            'description' => 'nullable|string',
-            'price' => 'sometimes|numeric',
-            'category_id' => 'sometimes|exists:categories,id',
-          'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
+        $path = $request->file('file')->store('products', 'public');
 
-
+        File::create([
+            'files' => $path,
+            'product_id' => $product->id,
         ]);
-
-        $product->update($data);
-
-        return new ProductResource($product->load(['category', 'seller', 'images']));
     }
+
+    return new ProductResource($product->load(['category', 'seller', 'files']));
+}
 
     public function destroy(Product $product)
     {
