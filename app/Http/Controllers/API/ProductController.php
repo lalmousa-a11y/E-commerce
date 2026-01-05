@@ -10,6 +10,10 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Http\Resources\ProductResource;
 use App\Models\File;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+
+
 
 
 
@@ -26,33 +30,16 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest  $request)
     {
-        $data = $request->validate([
-        'name' => 'required|string|max:100',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric',
-        'category_id' => 'required|exists:categories,id',
-        'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
+
         
-    ]);
-
-     $category = Category::where('id', $data['category_id'])->first();
-
-     if (!$category) {
-    return response()->json(['message' => 'Category not found'], 404);
-}
-
-
-    $data['seller_id'] = auth()->id();
-    $data['category_id'] = $category->id;
-
     $product = Product::create([
-        'name' => $data['name'],
-        'description' => $data['description'] ?? null,
-        'price' => $data['price'],
-        'seller_id' => $data['seller_id'],
-        'category_id' => $data['category_id'],
+        'name' => $request['name'],
+        'description' => $request['description'] ?? null,
+        'price' => $request['price'],
+        'seller_id' => $request['seller_id'],
+        'category_id' => $request['category_id'],
     ]);
     $path = $request->file('file')->store('products', 'public');
 
@@ -70,21 +57,13 @@ return new ProductResource($product->load(['category', 'seller', 'files']));
 return new ProductResource($product->load(['category', 'seller', 'files']));
 
     }
- public function update(Request $request, Product $product)
+ public function update(UpdateProductRequest $request, Product $product)
 {
     if ($product->seller_id !== auth()->id()) {
         return response()->json(['message' => 'Unauthorized'], 403);
     }
 
-    $data = $request->validate([
-        'name' => 'sometimes|string|max:100',
-        'description' => 'nullable|string',
-        'price' => 'sometimes|numeric',
-        'category_id' => 'sometimes|exists:categories,id',
-        'file' => 'sometimes|file|mimes:jpg,jpeg,png,pdf|max:2048',
-    ]);
-
-    $product->update($data);
+    $product->update($request);
 
     if ($request->hasFile('file')) {
 

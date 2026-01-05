@@ -8,15 +8,13 @@ use App\Models\CartItem;
 use App\Models\Product;
 use App\Http\Resources\CartItemResource;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AddToCartRequest;
+
 class CartController extends Controller
 {
-      public function addToCart(Request $request)
+      public function addToCart(AddToCartRequest  $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'qty' => 'required|integer|min:1'
-        ]);
-
+        
         $item = CartItem::where('user_id', auth()->id())
             ->where('product_id', $request->product_id)
             ->first();
@@ -33,12 +31,8 @@ class CartController extends Controller
 
         return response()->json(['message' => 'Product added to cart']);
     }
-    public function updateQty(Request $request, $id)
+    public function updateQty(AddToCartRequest $request, $id)
     {
-        $request->validate([
-            'qty' => 'required|integer|min:1'
-        ]);
-
         $item = CartItem::where('id', $id)
             ->where('user_id', auth()->id())
             ->firstOrFail();
