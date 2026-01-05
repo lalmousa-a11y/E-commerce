@@ -7,6 +7,8 @@ use App\Models\Post;
 use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
+
 
 class PostController extends Controller
 {
@@ -16,12 +18,9 @@ class PostController extends Controller
         return SellerResource::collection($users);    
 
     }
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'required|string',
-        ]);
+    
         $post = $request->user()->posts()->create($request->only('title', 'body'));
         return response()->json(['message' => 'Post created', 'post' => $post]);
     }
@@ -29,12 +28,9 @@ class PostController extends Controller
     {
         return response()->json($post);
     }
-    public function update(Request $request, Post $post)
+    public function update(PostRequest  $request, Post $post)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'required|string',
-        ]);
+  
         $post->update($request->only('title', 'body'));
         return response()->json(['message' => 'Post updated', 'post' => $post]);
     }

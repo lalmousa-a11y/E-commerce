@@ -25,7 +25,7 @@ class Product extends Model
     }
 public function files()
 {
-    return $this->hasMany(File::class);
+    return $this->hasOne(File::class);
 }
 
 }

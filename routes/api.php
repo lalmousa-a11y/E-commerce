@@ -5,6 +5,8 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\FileController;
+use App\Http\Controllers\API\CartController;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -54,8 +56,10 @@ Route::post('/products/{product}/disapprove', [ProductController::class, 'disapp
 Route::get('/products/approved', [ProductController::class, 'AllApprovedProducts'])->middleware('role:admin');
 Route::get('/products/disapproved', [ProductController::class, 'AllDisapprovedProducts'])->middleware('role:admin');
 
-
-
+    Route::get('cart', [CartController::class, 'cart']);
+    Route::post('cart/add', [CartController::class, 'addToCart']);
+    Route::patch('cart/update/{id}', [CartController::class, 'updateQty']);
+    Route::delete('cart/remove/{id}', [CartController::class, 'removeItem']);
 
 
 });
