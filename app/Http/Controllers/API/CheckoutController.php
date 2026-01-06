@@ -51,7 +51,7 @@ class CheckoutController extends Controller
         }
 
         $paymentResponse = Http::post(
-            'https://e-commerce-api.free.beeceptor.com/payment',
+            'https://ecommerce.free.beeceptor.com/payment',
             [
                 'order_id' => $order->id,
                 'total_amount' => $totalAmount,
