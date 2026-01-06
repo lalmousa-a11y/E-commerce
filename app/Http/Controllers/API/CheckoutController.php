@@ -62,18 +62,23 @@ class CheckoutController extends Controller
         );
 
         $paymentData = $paymentResponse->json();
+        $status = $paymentData['status'] ?? 'failed';
+        $transactionId = $paymentData['transaction_id'] ?? null;
 
-        if ($paymentData['status'] === 'success') {
+        if ($status === 'SUCCESS') {
 
             $order->update([
                 'status' => 'COMPLETED',
                 'payment_status' => 'PAID',
-                'transaction_id' => $paymentData['transaction_id'] ?? null,
-            ]);
+                'transaction_id' => $transactionId,]);
 
             CartItem::where('user_id', $user->id)->delete();
 
-            return response()->json(['order' => new OrderResource($order)], 200);
+            return response()->json([
+                'status' => $order->status,
+                'payment_status' => $order->payment_status,
+                'transaction_id' => $order->transaction_id,
+            ], 200);
         }
 
         $order->update([
@@ -82,9 +87,10 @@ class CheckoutController extends Controller
         ]);
 
           return response()->json([
-              'order' => new OrderResource($order),
-             'message' => 'Payment failed'
-                ], 400);
+                 'status' => $order->status,
+                  'payment_status' => $order->payment_status,
+                  'transaction_id' => $order->transaction_id,
+                          ], 400);
     }
 
     public function myOrders()

@@ -14,7 +14,7 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+         return [
             'order_id' => $this->id,
             'status' => $this->status,
             'payment_status' => $this->payment_status,
@@ -28,7 +28,7 @@ class OrderResource extends JsonResource
                     'price_at_purchase' => $item->price_at_purchase,
                 ];
             }),
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at,
         ];
-    }
+      }  
 }
