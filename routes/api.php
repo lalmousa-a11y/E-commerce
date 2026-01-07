@@ -64,5 +64,5 @@ Route::get('/products/disapproved', [ProductController::class, 'AllDisapprovedPr
 
 
 Route::post('checkout', [CheckoutController::class, 'checkout'])->middleware('auth:sanctum');
-Route::get('orders', [CheckoutController::class, 'myOrders'])->middleware('auth:sanctum');
+Route::get('user/orders', [CheckoutController::class, 'myOrders'])->middleware('auth:sanctum');
 });

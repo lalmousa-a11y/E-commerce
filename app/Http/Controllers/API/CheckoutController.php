@@ -50,8 +50,11 @@ class CheckoutController extends Controller
             ]);
         }
 
+
+
+
         $paymentResponse = Http::post(
-            'https://ecommerce.free.beeceptor.com/payment',
+            env('PAYMENT_API'),
             [
                 'order_id' => $order->id,
                 'total_amount' => $totalAmount,
@@ -61,9 +64,14 @@ class CheckoutController extends Controller
             ]
         );
 
+        $status = 'FAILED';
+        $transactionId = null;
+        if($paymentResponse->successful()) {
         $paymentData = $paymentResponse->json();
-        $status = $paymentData['status'] ?? 'failed';
+        $status = $paymentData['status'] ?? 'FAILED';
         $transactionId = $paymentData['transaction_id'] ?? null;
+    }
+    
 
         if ($status === 'SUCCESS') {
 
