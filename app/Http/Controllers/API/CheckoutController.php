@@ -54,7 +54,7 @@ class CheckoutController extends Controller
 
 
         $paymentResponse = Http::post(
-            env('PAYMENT_API'),
+config('payment.api_url'),
             [
                 'order_id' => $order->id,
                 'total_amount' => $totalAmount,
