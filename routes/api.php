@@ -6,6 +6,7 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\FileController;
 use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\CheckoutController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -62,4 +63,6 @@ Route::get('/products/disapproved', [ProductController::class, 'AllDisapprovedPr
     Route::delete('cart/remove/{id}', [CartController::class, 'removeItem']);
 
 
+Route::post('checkout', [CheckoutController::class, 'checkout'])->middleware('auth:sanctum');
+Route::get('user/orders', [CheckoutController::class, 'myOrders'])->middleware('auth:sanctum');
 });
