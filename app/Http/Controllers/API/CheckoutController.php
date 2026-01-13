@@ -11,6 +11,7 @@ use App\Models\CartItem;
 use Illuminate\Support\Facades\Http;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\OrderResource;
+use App\Events\OrderConfirmed;
 
 
 
@@ -82,6 +83,8 @@ config('payment.api_url'),
 
             CartItem::where('user_id', $user->id)->delete();
 
+            OrderConfirmed::dispatch($order);
+
             return response()->json([
                 'status' => $order->status,
                 'payment_status' => $order->payment_status,
@@ -99,6 +102,7 @@ config('payment.api_url'),
                   'payment_status' => $order->payment_status,
                   'transaction_id' => $order->transaction_id,
                           ], 400);
+
     }
 
     public function myOrders()
