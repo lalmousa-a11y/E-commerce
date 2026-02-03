@@ -1,6 +1,6 @@
-@extends('admin.dashboard')
+@extends('layouts.admin')
 
-@section('title', 'Seller Profile - ' . $seller->user->name)
+@section('title', 'Seller Profile - ' . optional($seller->user)->name)
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -33,11 +33,11 @@
                     <div class="flex items-center gap-4">
                         <div class="flex-shrink-0">
                             <div class="flex items-center justify-center h-16 w-16 rounded-full bg-white text-blue-600 font-bold text-xl">
-                                {{ substr($seller->user->name, 0, 1) }}
+                                {{ substr(optional($seller->user)->name, 0, 1) }}
                             </div>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold">{{ $seller->user->name }}</h2>
+                            <h2 class="text-2xl font-bold">{{ optional($seller->user)->name }}</h2>
                             <p class="text-blue-100">{{ $seller->shop_name ?? 'No Shop Name' }}</p>
                         </div>
                     </div>
@@ -65,20 +65,10 @@
                         <!-- Email -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                            <p class="text-gray-600">{{ $seller->user->email }}</p>
+                            <p class="text-gray-600">{{  optional($seller->user)->email }}</p>
                         </div>
 
-                        <!-- Phone -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
-                            <p class="text-gray-600">{{ $seller->phone ?? 'Not provided' }}</p>
-                        </div>
-
-                        <!-- Address -->
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Address</label>
-                            <p class="text-gray-600">{{ $seller->address ?? 'Not provided' }}</p>
-                        </div>
+                    
 
                         <!-- Member Since -->
                         <div>
@@ -284,8 +274,8 @@
                 <div class="space-y-3">
                     <div>
                         <p class="text-xs text-gray-600 mb-1">Email</p>
-                        <a href="mailto:{{ $seller->user->email }}" class="text-blue-600 hover:text-blue-800 font-semibold break-all">
-                            {{ $seller->user->email }}
+                        <a href="mailto:{{ optional($seller->user)->email }}" class="text-blue-600 hover:text-blue-800 font-semibold break-all">
+                            {{ optional($seller->user)->email }}
                         </a>
                     </div>
 

@@ -10,14 +10,15 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'seller_id',
         'category_id',
+        'seller_id',
+        'status',
     ];
 
-        public function seller()
-    {
-        return $this->belongsTo(User::class, 'seller_id');
-    }
+ public function seller()
+{
+    return $this->belongsTo(Seller::class, 'seller_id', 'id');
+}
 
     public function category()
     {
@@ -25,7 +26,11 @@ class Product extends Model
     }
 public function files()
 {
-    return $this->hasOne(File::class);
+    return $this->hasMany(File::class);
+}
+public function orderItems()
+{
+    return $this->hasMany(OrderItem::class);
 }
 
 }

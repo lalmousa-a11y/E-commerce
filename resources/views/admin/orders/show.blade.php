@@ -59,7 +59,7 @@
                             @foreach($order->items as $item)
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="px-6 py-4 text-sm">
-                                        <a href="{{ route('products.show', $item->product->id) }}" class="text-blue-600 hover:underline">
+                                        <a href="{{ route('admin.products.show', $item->product->id) }}" class="text-blue-600 hover:underline">
                                             {{ substr($item->product->name, 0, 40) }}
                                         </a>
                                     </td>
@@ -128,7 +128,7 @@
                 </div>
 
                 <a 
-                    href="{{ route('orders.index') }}" 
+                    href="{{ route('admin.orders.index') }}" 
                     class="w-full mt-6 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg text-center"
                 >
                     ⬅️ return

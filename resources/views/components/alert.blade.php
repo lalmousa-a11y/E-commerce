@@ -1,73 +1,73 @@
 
 @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <div class="flex items-center">
-            <span class="text-2xl mr-3">✅</span>
-            <div>
-                <strong>success!</strong>
-                <p>{{ session('success') }}</p>
+    <div class="alert-success p-4 sm:p-6 rounded-lg border-l-4 border-green-600 bg-green-50 mb-4 animate-fadeIn" role="alert">
+        <div class="flex items-start">
+            <span class="text-2xl ml-3">✅</span>
+            <div class="flex-1">
+                <strong class="text-green-800 block mb-1">Success!</strong>
+                <p class="text-green-700 text-sm">{{ session('success') }}</p>
             </div>
+            <button type="button" class="close-alert text-green-600 hover:text-green-800 ml-2">
+                <span class="text-xl">&times;</span>
+            </button>
         </div>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
 @endif
 
 @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <div class="flex items-center">
-            <span class="text-2xl mr-3">❌</span>
-            <div>
-                <strong>error!</strong>
-                <p>{{ session('error') }}</p>
+    <div class="alert-error p-4 sm:p-6 rounded-lg border-l-4 border-red-600 bg-red-50 mb-4 animate-fadeIn" role="alert">
+        <div class="flex items-start">
+            <span class="text-2xl ml-3">❌</span>
+            <div class="flex-1">
+                <strong class="text-red-800 block mb-1">Error!</strong>
+                <p class="text-red-700 text-sm">{{ session('error') }}</p>
             </div>
+            <button type="button" class="close-alert text-red-600 hover:text-red-800 ml-2">
+                <span class="text-xl">&times;</span>
+            </button>
         </div>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
 @endif
 
 @if(session('warning'))
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <div class="flex items-center">
-            <span class="text-2xl mr-3">⚠️</span>
-            <div>
-                <strong>warning!</strong>
-                <p>{{ session('warning') }}</p>
+    <div class="alert-warning p-4 sm:p-6 rounded-lg border-l-4 border-yellow-600 bg-yellow-50 mb-4 animate-fadeIn" role="alert">
+        <div class="flex items-start">
+            <span class="text-2xl ml-3">⚠️</span>
+            <div class="flex-1">
+                <strong class="text-yellow-800 block mb-1">Warning!</strong>
+                <p class="text-yellow-700 text-sm">{{ session('warning') }}</p>
             </div>
+            <button type="button" class="close-alert text-yellow-600 hover:text-yellow-800 ml-2">
+                <span class="text-xl">&times;</span>
+            </button>
         </div>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
 @endif
 
 @if($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>❌  checking for error :</strong>
-        <ul class="mt-2 ml-4">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+    <div class="alert-error p-4 sm:p-6 rounded-lg border-l-4 border-red-600 bg-red-50 mb-4 animate-fadeIn" role="alert">
+        <div class="flex items-start">
+            <span class="text-2xl ml-3">❌</span>
+            <div class="flex-1">
+                <strong class="text-red-800 block mb-2">Errors Found:</strong>
+                <ul class="space-y-1 text-red-700 text-sm">
+                    @foreach($errors->all() as $error)
+                        <li class="flex items-center">
+                            <span class="inline-block w-1 h-1 bg-red-600 rounded-full ml-2"></span>
+                            {{ $error }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+            <button type="button" class="close-alert text-red-600 hover:text-red-800 ml-2">
+                <span class="text-xl">&times;</span>
+            </button>
+        </div>
     </div>
 @endif
 
 <style>
-.alert {
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
-    animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
+@keyframes fadeIn {
     from {
         opacity: 0;
         transform: translateY(-20px);
@@ -78,58 +78,38 @@
     }
 }
 
-.alert-success {
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
 }
 
-.alert-danger {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-}
-
-.alert-warning {
-    color: #856404;
-    background-color: #fff3cd;
-    border-color: #ffeaa7;
-}
-
-.alert-dismissible {
-    padding-right: 1.25rem;
-}
-
-.alert-dismissible .close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: .75rem 1.25rem;
-    color: inherit;
-}
-
-.close {
-    float: right;
+.close-alert {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
     font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #fff;
-    opacity: .5;
+    transition: all 0.2s ease;
 }
 
-.close:hover {
-    opacity: .75;
+.close-alert:hover {
+    transform: scale(1.2);
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
+    // Add close functionality
+    document.querySelectorAll('.close-alert').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.closest('[role="alert"]').remove();
+        });
+    });
+    
+    // Auto-dismiss alerts after 5 seconds
+    document.querySelectorAll('[role="alert"]').forEach(alert => {
         setTimeout(function() {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+            alert.remove();
         }, 5000);
     });
 });

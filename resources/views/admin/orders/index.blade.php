@@ -5,7 +5,7 @@
 
 @section('content')
     <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <form method="GET" action="{{ route('orders.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🔍 search:</label>
                 <input 
@@ -58,10 +58,10 @@
                     🔍 search
                 </button>
                 <a 
-                    href="{{ route('orders.index') }}" 
+                    href="{{ route('admin.orders.index') }}" 
                     class="flex-1 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition text-center"
                 >
-                    🔄 مسح
+                    🔄 Delete
                 </a>
             </div>
         </form>
@@ -85,7 +85,7 @@
                     @forelse($orders as $order)
                         <tr class="border-b hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm font-semibold">
-                                <a href="{{ route('orders.show', $order->id) }}" class="text-blue-600 hover:underline">
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="text-blue-600 hover:underline">
                                     #{{ $order->id }}
                                 </a>
                             </td>
@@ -106,10 +106,10 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <a 
-                                    href="{{ route('orders.show', $order->id) }}" 
+                                    href="{{ route('admin.orders.show', $order->id) }}" 
                                     class="text-blue-600 hover:text-blue-900 text-sm font-semibold"
                                 >
-                                    👁️ عرض
+                                    👁️ Display
                                 </a>
                             </td>
                         </tr>

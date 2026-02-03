@@ -17,7 +17,7 @@ class UpdateSellerRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $this->route('seller')->id,
+            // 'email' => 'required|email|unique:users,email,' . $this->route('seller')->id,
             'is_approved' => 'required|boolean',
         ];
     }
@@ -28,9 +28,9 @@ class UpdateSellerRequest extends FormRequest
         return [
             'name.required' => ' name is required',
             'name.max' => 'name must not exceed 255 characters',
-            'email.required' => 'email is required',
-            'email.email' => 'email is invalid',
-            'email.unique' => 'email is already in use',
+            // 'email.required' => 'email is required',
+            // 'email.email' => 'email is invalid',
+            // 'email.unique' => 'email is already in use',
             'is_approved.required' => 'approval status is required',
             'is_approved.boolean' => 'approval status is invalid',
         ];

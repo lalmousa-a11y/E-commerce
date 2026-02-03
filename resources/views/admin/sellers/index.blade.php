@@ -1,4 +1,4 @@
-@extends('admin.dashboard')
+@extends('layouts.admin')
 
 @section('title', 'Sellers Management')
 
@@ -95,14 +95,19 @@
                 <tbody>
                     @forelse($sellers as $seller)
                         <tr class="border-b border-gray-200 hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $seller->user->id }}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $seller->user->name }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">{{ $seller->user->email }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+    {{ optional($seller->user)->id }}
+</td>
+                  
+<td class="px-6 py-4 text-sm font-medium text-gray-900">
+    {{ optional($seller->user)->name }}
+</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ optional($seller->user)->email }}</td>
                             <td class="px-6 py-4 text-sm">
                                 <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold
-                                    @if($seller->status === 'pending')
+                                    @if($seller->approvalStatus() === 'pending')
                                         bg-yellow-100 text-yellow-800
-                                    @elseif($seller->status === 'approved')
+                                    @elseif($seller->approvalStatus() === 'approved')
                                         bg-green-100 text-green-800
                                     @else
                                         bg-red-100 text-red-800

@@ -58,8 +58,7 @@ class ProductController extends Controller
     public function updateStatus(UpdateProductStatusRequest $request, Product $product)
     {
      
-
-        $product->update(['status' => $request['status']]);
+        $product->update(['status' => $request->status]);
 
         return back()->with('success', 'updated successfully ');
     }

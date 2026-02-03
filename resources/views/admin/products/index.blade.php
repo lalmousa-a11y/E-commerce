@@ -5,7 +5,7 @@
 
 @section('content')
     <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <form method="GET" action="{{ route('products.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <form method="GET" action="{{ route('admin.products.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🔍 search:</label>
                 <input 
@@ -65,13 +65,15 @@
                     type="submit" 
                     class="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition"
                 >
-                    🔍 بحث
+                    🔍 Search
+                    
                 </button>
                 <a 
-                    href="{{ route('products.index') }}" 
+                    href="{{ route('admin.products.index') }}" 
                     class="flex-1 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition text-center"
                 >
-                    🔄 مسح
+                    🔄 Delete
+                    
                 </a>
             </div>
         </form>
@@ -100,7 +102,7 @@
                                 {{ substr($product->name, 0, 30) }}...
                             </td>
                             <td class="px-6 py-4 text-sm">
-                                <a href="{{ route('sellers.show', $product->seller->id) }}" class="text-blue-600 hover:underline">
+                                <a href="{{ route('admin.sellers.show', $product->seller->id) }}" class="text-blue-600 hover:underline">
                                     {{ $product->seller->name }}
                                 </a>
                             </td>
@@ -120,13 +122,13 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <a 
-                                    href="{{ route('products.show', $product->id) }}" 
+                                    href="{{ route('admin.products.show', $product->id) }}" 
                                     class="text-blue-600 hover:text-blue-900 text-sm font-semibold"
                                 >
-                                    👁️ عرض
+                                    👁️ display
                                 </a>
                                 
-                                <form method="POST" action="{{ route('products.destroy', $product->id) }}" class="inline"
+                                <form method="POST" action="{{ route('admin.products.destroy', $product->id) }}" class="inline"
                                       onsubmit="return confirm(' Are you sure you want to delete this product? ')">
                                     @csrf
                                     @method('DELETE')

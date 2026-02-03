@@ -20,6 +20,7 @@ class RoleMiddleware
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
             
+            return redirect()->route('admin.login')->with('error', 'Unauthorized access');
         }
         
         return $next($request);

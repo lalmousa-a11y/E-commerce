@@ -1,6 +1,6 @@
-@extends('admin.dashboard')
+@extends('layouts.admin')
 
-@section('title', 'Edit Seller - ' . $seller->user->name)
+@section('title', 'Edit Seller - ' . optional($seller->user)->name)
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -9,7 +9,7 @@
         <a href="{{ route('admin.sellers.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
             ← Back to Sellers
         </a>
-        <h1 class="text-3xl font-bold text-gray-800 mt-2">Edit Seller: {{ $seller->user->name }}</h1>
+        <h1 class="text-3xl font-bold text-gray-800 mt-2">Edit Seller: {{  optional($seller->user)->name }}</h1>
     </div>
 
     <!-- Error Alert -->
@@ -41,7 +41,7 @@
                         <input 
                             type="text" 
                             name="name" 
-                            value="{{ old('name', $seller->user->name) }}"
+                            value="{{ old('name',  optional($seller->user)->name) }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('name') border-red-500 @enderror"
                             required
                         >
@@ -50,52 +50,24 @@
                         @enderror
                     </div>
 
-                    <!-- User Email -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input 
-                            type="email" 
-                            name="email" 
-                            value="{{ old('email', $seller->user->email) }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('email') border-red-500 @enderror"
-                            required
-                        >
-                        @error('email')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     <!-- Seller Status -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
                         <select 
-                            name="status" 
+                            name="is_approved" 
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('status') border-red-500 @enderror"
                             required
                         >
-                            <option value="pending" {{ old('status', $seller->status) === 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="approved" {{ old('status', $seller->status) === 'approved' ? 'selected' : '' }}>Approved</option>
-                            <option value="rejected" {{ old('status', $seller->status) === 'rejected' ? 'selected' : '' }}>Rejected</option>
-                        </select>
+                       <option value="0" {{ old('is_approved', $seller->is_approved ? '1' : '0') == '0' ? 'selected' : '' }}>Pending</option>
+                       <option value="1" {{ old('is_approved', $seller->is_approved ? '1' : '0') == '1' ? 'selected' : '' }}>Approved</option>
+                       <option value="0" {{ old('is_approved', $seller->is_approved ? '1' : '0') == '0' && old('is_approved') === '0' ? 'selected' : '' }}>Rejected</option>
+        </select>
                         @error('status')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Shop Name -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Shop Name</label>
-                        <input 
-                            type="text" 
-                            name="shop_name" 
-                            value="{{ old('shop_name', $seller->shop_name) }}"
-                            placeholder="Enter shop name"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('shop_name') border-red-500 @enderror"
-                        >
-                        @error('shop_name')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+            
 
                     <!-- Shop Description -->
                     <div class="mb-4">
@@ -111,35 +83,7 @@
                         @enderror
                     </div>
 
-                    <!-- Phone Number -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                        <input 
-                            type="tel" 
-                            name="phone" 
-                            value="{{ old('phone', $seller->phone) }}"
-                            placeholder="Enter phone number"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('phone') border-red-500 @enderror"
-                        >
-                        @error('phone')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Address -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                        <input 
-                            type="text" 
-                            name="address" 
-                            value="{{ old('address', $seller->address) }}"
-                            placeholder="Enter address"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('address') border-red-500 @enderror"
-                        >
-                        @error('address')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                  
 
                     <!-- Form Actions -->
                     <div class="flex gap-4">

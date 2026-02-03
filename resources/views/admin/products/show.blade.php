@@ -7,22 +7,22 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
             @if($product->files->count() > 0)
-                <div class="bg-white rounded-lg shadow p-6 mb-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">🖼️  product photos</h3>
-                    
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        @foreach($product->files as $file)
-                            <div class="bg-gray-100 rounded-lg overflow-hidden">
-                                <img 
-                                    src="{{ asset('storage/' . $file->files) }}" 
-                                    alt="{{ $product->name }}"
-                                    class="w-full h-40 object-cover"
-                                >
-                            </div>
-                        @endforeach
-                    </div>
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">🖼️  product photos</h3>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            @foreach($product->files as $file)
+                <div class="bg-gray-100 rounded-lg overflow-hidden">
+                    <img 
+                        src="{{ asset('storage/' . $file->files) }}" 
+                        alt="{{ $product->name }}"
+                        class="w-full h-40 object-cover"
+                    >
                 </div>
-            @endif
+            @endforeach
+        </div>
+    </div>
+@endif
 
             <div class="bg-white rounded-lg shadow p-6 mb-6">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">📋 product information</h3>
@@ -51,7 +51,7 @@
                     <div class="border-b pb-3">
                         <p class="text-sm text-gray-600">seller:</p>
                         <a 
-                            href="{{ route('sellers.show', $product->seller->id) }}" 
+                            href="{{ route('admin.sellers.show', $product->seller->id) }}" 
                             class="text-lg font-semibold text-blue-600 hover:underline"
                         >
                             {{ $product->seller->name }}
@@ -68,7 +68,7 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <h3 class="text-lg font-bold text-gray-900 mb-4">⚙️  update status</h3>
                 
-                <form method="POST" action="{{ route('products.updateStatus', $product->id) }}" class="flex gap-3">
+                <form method="POST" action="{{ route('admin.products.updateStatus', $product->id) }}" class="flex gap-3">
                     @csrf
                     
                     <select 
@@ -118,7 +118,7 @@
             </div>
 
             <div class="bg-white rounded-lg shadow p-6 space-y-3">
-                <form method="POST" action="{{ route('products.destroy', $product->id) }}" 
+                <form method="POST" action="{{ route('admin.products.destroy', $product->id) }}" 
                       onsubmit="return confirm('Are you sure you want to delete this product?')">
                     @csrf
                     @method('DELETE')
@@ -131,7 +131,7 @@
                 </form>
 
                 <a 
-                    href="{{ route('products.index') }}" 
+                    href="{{ route('admin.products.index') }}" 
                     class="w-full block bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition text-center"
                 >
                     ⬅️ back
