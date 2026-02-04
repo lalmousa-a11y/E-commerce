@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Seller;
 use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\LoginRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\AdminLogin;
 
 
 class AuthenticationController extends Controller
@@ -65,4 +66,7 @@ class AuthenticationController extends Controller
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     }
+
+
+
 }

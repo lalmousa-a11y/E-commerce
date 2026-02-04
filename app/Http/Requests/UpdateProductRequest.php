@@ -6,9 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+
     public function authorize(): bool
     {
         return true;
@@ -22,7 +20,7 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-              'name' => 'sometimes|string|max:100',
+            'name' => 'sometimes|string|max:100',
             'description' => 'nullable|string',
             'price' => 'sometimes|numeric',
             'category_id' => 'sometimes|exists:categories,id',
