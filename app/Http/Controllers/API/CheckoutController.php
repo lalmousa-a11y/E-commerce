@@ -12,105 +12,93 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\OrderResource;
 use App\Events\OrderConfirmed;
+use App\Services\OrderService;
+use App\Services\PaymentService;
+use App\Services\OrderDiscountService;
+use App\Services\Discounts\PercentageDiscount;
+use App\Services\Discounts\FixedAmountDiscount;
+
 
 
 
 class CheckoutController extends Controller
 {
+     protected $orderService;
+    protected $paymentService;
+    public function __construct(OrderService $orderService, PaymentService $paymentService)
+    {
+        $this->orderService = $orderService;
+        $this->paymentService = $paymentService;
+    }
+   
     public function checkout(CheckoutRequest $request)
     {
-    
+        try {
+            // Create order from cart
+            $order = $this->orderService->createOrderFromCart(auth()->id());
 
-        $user = auth()->user();
-
-        $cartItems = CartItem::where('user_id', $user->id)->with('product')->get();
-
-        if ($cartItems->isEmpty()) {
-            return response()->json([
-                'message' => 'Cart is empty'
-            ], 400);
-        }
-
-        $totalAmount = $cartItems->sum(function ($item) {
-            return $item->qty * $item->product->price;
-        });
-
-        $order = Order::create([
-            'user_id' => $user->id,
-            'total_amount' => $totalAmount,
-            'status' => 'PENDING',
-            'payment_status' => 'UNPAID',
-        ]);
-
-        foreach ($cartItems as $item) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item->product_id,
-                'quantity' => $item->qty,
-                'price_at_purchase' => $item->product->price,
-            ]);
-        }
-
-
-
-
-        $paymentResponse = Http::post(
-config('payment.api_url'),
-            [
-                'order_id' => $order->id,
-                'total_amount' => $totalAmount,
+            // Process payment
+            $paymentResult = $this->paymentService->processPayment($order, [
                 'card_number' => $request->card_number,
                 'expiry' => $request->expiry,
                 'cvv' => $request->cvv,
-            ]
-        );
+            ]);
 
-        $status = 'FAILED';
-        $transactionId = null;
-        if($paymentResponse->successful()) {
-        $paymentData = $paymentResponse->json();
-        $status = $paymentData['status'] ?? 'FAILED';
-        $transactionId = $paymentData['transaction_id'] ?? null;
-    }
-    
+            // Handle payment result
+            if ($paymentResult['success'] && $paymentResult['status'] === 'SUCCESS') {
+                $this->orderService->completeOrder($order, $paymentResult['transaction_id']);
 
-        if ($status === 'SUCCESS') {
+                return response()->json([
+                    'message' => 'Order completed successfully',
+                    'status' => $order->status,
+                    'payment_status' => $order->payment_status,
+                    'transaction_id' => $order->transaction_id,
+                ], 200);
+            }
 
-            $order->update([
-                'status' => 'COMPLETED',
-                'payment_status' => 'PAID',
-                'transaction_id' => $transactionId,]);
-
-            CartItem::where('user_id', $user->id)->delete();
-
-            OrderConfirmed::dispatch($order);
+            // Payment failed
+            $this->orderService->failOrder($order);
 
             return response()->json([
+                'message' => 'Payment failed',
                 'status' => $order->status,
-                'payment_status' => $order->payment_status,
-                'transaction_id' => $order->transaction_id,
-            ], 200);
+            ], 400);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
         }
-
-        $order->update([
-            'status' => 'FAILED',
-            'payment_status' => 'FAILED',
-        ]);
-
-          return response()->json([
-                 'status' => $order->status,
-                  'payment_status' => $order->payment_status,
-                  'transaction_id' => $order->transaction_id,
-                          ], 400);
-
     }
 
     public function myOrders()
     {
-        $orders = Order::where('user_id', auth()->id())
-            ->with('items.product')
-            ->get();
-
-        return response()->json(['orders' => OrderResource::collection($orders)], 200);
+        $orders = auth()->user()->orders()->with('items.product')->get();
+        return OrderResource::collection($orders);
     }
+
+    public function applyDiscount(Request $request, Order $order, OrderDiscountService $discountService)
+{
+    $this->authorize('update', $order);
+
+    $request->validate([
+        'discount_type' => 'required|in:percentage,fixed',
+        'discount_value' => 'required|numeric|min:0',
+    ]);
+
+    // All discount types are substitutable
+    $discount = match($request->discount_type) {
+        'percentage' => new PercentageDiscount($request->discount_value),
+        'fixed' => new FixedAmountDiscount($request->discount_value),
+    };
+
+    $discountAmount = $discountService->applyDiscount($order, $discount);
+
+    return response()->json([
+        'message' => 'Discount applied successfully',
+        'discount' => $discountAmount,
+        'final_amount' => $order->final_amount,
+    ]);
+}
+
 }
