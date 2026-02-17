@@ -63,6 +63,7 @@ Route::get('/products/disapproved', [ProductController::class, 'AllDisapprovedPr
     Route::delete('cart/remove/{id}', [CartController::class, 'removeItem']);
 
 
-Route::post('checkout', [CheckoutController::class, 'checkout'])->middleware('auth:sanctum');
-Route::get('user/orders', [CheckoutController::class, 'myOrders'])->middleware('auth:sanctum');
+Route::post('checkout', [CheckoutController::class, 'checkout']);
+Route::get('user/orders', [CheckoutController::class, 'myOrders']);
+
 });
