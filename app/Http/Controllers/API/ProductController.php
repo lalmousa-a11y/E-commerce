@@ -63,4 +63,25 @@ class ProductController extends Controller
         $product = $this->productService->disapproveProduct($product);
         return new ProductResource($product);
     }
+
+    public function destroy(Product $product)
+    {
+        $this->authorize('delete', $product);
+
+        $this->productService->deleteProduct($product);
+
+        return response()->json(['message' => 'Product deleted successfully']);
+    }
+
+    public function AllApprovedProducts()
+    {
+        $products = $this->productService->getApprovedProducts();
+        return ProductResource::collection($products);
+    }
+
+    public function AllDisapprovedProducts()
+    {
+        $products = $this->productService->getDisapprovedProducts();
+        return ProductResource::collection($products);
+    }
 }

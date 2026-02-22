@@ -7,6 +7,8 @@ use App\Services\OrderService;
 use App\Contracts\OrderRepositoryInterface;
 use App\Contracts\NotificationServiceInterface;
 use App\Contracts\CacheServiceInterface;
+use App\Models\Order;
+use App\Models\User;
 use Mockery;
 
 class OrderServiceTest extends TestCase
@@ -18,12 +20,21 @@ class OrderServiceTest extends TestCase
         $notification = Mockery::mock(NotificationServiceInterface::class);
         $cache = Mockery::mock(CacheServiceInterface::class);
 
-        $order = (object) ['id' => 1, 'user_id' => 1, 'user' => (object)['email' => 'test@example.com']];
+        $cartItem = Mockery::mock('alias:App\\Models\\CartItem');
+        $cartItem->shouldReceive('where')->once()->with('user_id', 1)->andReturnSelf();
+        $cartItem->shouldReceive('delete')->once()->andReturn(1);
+
+        $user = new User(['email' => 'test@example.com']);
+        $user->id = 1;
+
+        $order = new Order(['user_id' => 1]);
+        $order->id = 1;
+        $order->setRelation('user', $user);
 
         // Set expectations
-        $orderRepo->shouldReceive('update')->once()->andReturn($order);
-        $notification->shouldReceive('sendOrderConfirmation')->once();
-        $cache->shouldReceive('forget')->once();
+        $orderRepo->shouldReceive('update')->once()->with($order, Mockery::type('array'))->andReturn($order);
+        $notification->shouldReceive('sendOrderConfirmation')->once()->with($order, $user);
+        $cache->shouldReceive('forget')->once()->with('user_orders_1');
 
         // Inject mocks
         $service = new OrderService($orderRepo, $notification, $cache);

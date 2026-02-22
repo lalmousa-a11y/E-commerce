@@ -80,4 +80,19 @@ class ProductService
     {
         return $this->productRepository->disapprove($product);
     }
+
+    public function deleteProduct(Product $product): bool
+    {
+        return $this->productRepository->delete($product);
+    }
+
+    public function getApprovedProducts()
+    {
+        return $this->productRepository->findApproved();
+    }
+
+    public function getDisapprovedProducts()
+    {
+        return $this->productRepository->findDisapproved();
+    }
 }
